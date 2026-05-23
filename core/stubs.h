@@ -18,6 +18,12 @@ int kite_strcmp(const char *s1, const char *s2);
 char *kite_strcpy(char *dest, const char *src);
 char *kite_strncpy(char *dest, const char *src, size_t n);
 
+int kite_vsnprintf(char *buf, size_t size, const char *fmt, __builtin_va_list args);
 int kite_snprintf(char *buf, size_t size, const char *fmt, ...);
+
+// printk wrapper using kernel printk
+// call kite_printk_init() in start() before using
+void kite_printk_init(uint64_t printk_va);
+int kite_printk(const char *fmt, ...);
 
 #endif // _KITE_STUBS_H

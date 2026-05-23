@@ -74,6 +74,12 @@ $(OBJ_DIR)/%.o: $(ARCH_DIR)/%.c | $(OBJ_DIR)
 $(OBJ_DIR)/map_text.o: $(ARCH_DIR)/map_text.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -mgeneral-regs-only -c $< -o $@
 
+$(OBJ_DIR)/tlsf.o: $(CORE_DIR)/memory/tlsf.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/symbol_engine.o: $(CORE_DIR)/symbol/symbol_engine.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(OBJ_DIR)/%.o: $(ARCH_DIR)/%.S | $(OBJ_DIR)
 	$(CC) $(ASFLAGS) -x assembler-with-cpp -c $< -o $@
 

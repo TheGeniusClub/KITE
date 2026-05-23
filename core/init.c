@@ -13,6 +13,7 @@
 #include "arch/arm64/setup.h"
 #include "arch/arm64/start.h"
 #include "symbol/symbol_engine.h"
+#include "stubs.h"
 
 // preset data
 uint8_t kite_header_padding[KITE_HEADER_SIZE] __attribute__((section(".preset.data")));
@@ -85,17 +86,18 @@ int __attribute__((section(".start.text"))) __noinline start(uint64_t kimage_vof
     uint64_t kernel_va = kimage_voffset + start_preset.kernel_pa;
     uint64_t printk_addr = kernel_va + start_preset.printk_offset;
     
-    ((int (*)(const char *, ...))printk_addr)("KITE: Stage 2 loaded, kimage_voffset=0x%llx\n", kimage_voffset);
+    kite_printk_init(printk_addr);
+    kite_printk("KITE: Stage 2 loaded, kimage_voffset=0x%llx\n", kimage_voffset);
     
     // init symbol engine
     if (kite_symbol_init) {
         int ret = kite_symbol_init((void *)kernel_va, start_preset.kernel_size);
         if (ret == 0) {
             uint64_t printk_lookup = symbol_lookup_name("printk");
-            ((int (*)(const char *, ...))printk_addr)("KITE: symbol lookup test: printk=0x%llx (expected=0x%llx)\n",
-                                                      printk_lookup, kernel_va + start_preset.printk_offset);
+            kite_printk("KITE: symbol lookup test: printk=0x%llx (expected=0x%llx)\n",
+                        printk_lookup, printk_addr);
         } else {
-            ((int (*)(const char *, ...))printk_addr)("KITE: symbol engine init failed\n");
+            kite_printk("KITE: symbol engine init failed\n");
         }
     }
     

@@ -11,6 +11,8 @@
 
 #include "arch/arm64/setup.h"
 
+extern start_preset_t start_preset;
+
 static unsigned long (*kallsyms_lookup_name)(const char *name) = 0;
 
 int kite_symbol_init(void *kernel_base, size_t kernel_size)
