@@ -11,6 +11,8 @@
 int hotpatch_init(void);
 int hotpatch_apply(void *addr, void *new_code, size_t len);
 int hotpatch_revert(void *addr);
+int hotpatch(void *addrs[], uint32_t values[], int cnt);
+int hotpatch_nosync(void *addr, uint32_t value);
 
 // patch methods
 #define PATCH_METHOD_TEXTPoke 0

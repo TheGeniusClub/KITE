@@ -18,7 +18,7 @@
 - [x] **S1: Runtime Stubs** — memset/memcpy/strcmp/memmove/printk/vsnprintf/snprintf
 - [x] **S2: TLSF Pool Init** — Allocate 2MB RW + 4MB ROX via memblock_alloc, call tlsf_create
 - [ ] **S3: Symbol Engine** — Current only wraps kallsyms_lookup_name; need stripped fallback + cache
-- [ ] **S4: Hook Engine Core** — Header-only now; need impl: hook_prepare, hook_install, insn_reloc, trampoline
+- [x] **S4: Hook Engine Core** — hook_engine.c + fphook.c + hotpatch.c, full KP logic with KITE TLSF pool
 - [ ] **S5: Memory Mgmt** — execmem_alloc, alias_page, direct_pte (header-only now)
 - [ ] **S6: Module System** — ELF loader, init/exit lifecycle (header-only now)
 - [ ] **S7: Full QEMU Boot** — ARM64 initrd, verify to shell

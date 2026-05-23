@@ -50,6 +50,7 @@ S_SRCS := $(wildcard $(ARCH_DIR)/*.S)
 
 OBJS := $(patsubst %.c,$(OBJ_DIR)/%.o,$(notdir $(C_SRCS)))
 OBJS += $(patsubst %.S,$(OBJ_DIR)/%.o,$(notdir $(S_SRCS)))
+OBJS += $(OBJ_DIR)/transit_end.o
 
 # targets
 .PHONY: all clean qemu test
@@ -80,7 +81,19 @@ $(OBJ_DIR)/tlsf.o: $(CORE_DIR)/memory/tlsf.c | $(OBJ_DIR)
 $(OBJ_DIR)/symbol_engine.o: $(CORE_DIR)/symbol/symbol_engine.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJ_DIR)/hook_engine.o: $(CORE_DIR)/hook/hook_engine.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/fphook.o: $(CORE_DIR)/hook/fphook.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(OBJ_DIR)/hotpatch.o: $(CORE_DIR)/hook/hotpatch.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(OBJ_DIR)/%.o: $(ARCH_DIR)/%.S | $(OBJ_DIR)
+	$(CC) $(ASFLAGS) -x assembler-with-cpp -c $< -o $@
+
+$(OBJ_DIR)/transit_end.o: $(CORE_DIR)/hook/transit_end.S | $(OBJ_DIR)
 	$(CC) $(ASFLAGS) -x assembler-with-cpp -c $< -o $@
 
 $(BIN_DIR)/kite.elf: $(OBJS) | $(BIN_DIR)
