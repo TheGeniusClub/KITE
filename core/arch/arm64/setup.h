@@ -91,7 +91,7 @@ typedef struct
     uint64_t linear_voffset;
 } map_data_t;
 
-typedef int (*start_f)(uint64_t kimage_voffset, uint64_t linear_voffset);
+typedef int (*start_f)(uint64_t kimage_voffset, uint64_t linear_voffset, uint64_t alloc_pa, uint64_t alloc_size);
 
 typedef struct
 {

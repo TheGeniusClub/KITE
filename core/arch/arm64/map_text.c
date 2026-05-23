@@ -130,6 +130,10 @@ static __noinline void mem_proc(map_data_t *data)
     } else {
         __builtin_trap();
     }
+
+    if (data->alloc_size < MEMORY_RW_SIZE + MEMORY_ROX_SIZE) {
+        data->alloc_size = MEMORY_RW_SIZE + MEMORY_ROX_SIZE;
+    }
 }
 
 static uint64_t __noinline get_or_create_pte(map_data_t *data, uint64_t va, uint64_t pa, uint64_t attr_indx)
@@ -244,5 +248,6 @@ void __noinline _paging_init()
 
     ((memblock_free_f)data->map_symbol.memblock_free_relo)(old_start_pa, reserve_size);
 
-    ((start_f)start_va)(data->kimage_voffset, data->linear_voffset);
+    uint64_t alloc_pa = start_pa + data->start_size + align_extra_size;
+    ((start_f)start_va)(data->kimage_voffset, data->linear_voffset, alloc_pa, data->alloc_size);
 }

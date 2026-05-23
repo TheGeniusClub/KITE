@@ -81,23 +81,47 @@ int kite_late_init(void *preset)
 }
 
 // Stage 2 entry - called from _paging_init after memory relocation
-int __attribute__((section(".start.text"))) __noinline start(uint64_t kimage_voffset, uint64_t linear_voffset)
+int __attribute__((section(".start.text"))) __noinline start(uint64_t kimage_voffset, uint64_t linear_voffset,
+                                                              uint64_t alloc_pa, uint64_t alloc_size)
 {
     uint64_t kernel_va = kimage_voffset + start_preset.kernel_pa;
     uint64_t printk_addr = kernel_va + start_preset.printk_offset;
     
     kite_printk_init(printk_addr);
-    kite_printk("KITE: Stage 2 loaded, kimage_voffset=0x%llx\n", kimage_voffset);
+    kite_printk("KITE: Stage 2 loaded, kimage_voffset=0x%llx alloc=0x%llx+0x%llx\n",
+                kimage_voffset, alloc_pa, alloc_size);
+    
+    // init memory pools
+    if (alloc_size >= MEMORY_RW_SIZE + MEMORY_ROX_SIZE) {
+        uint64_t pool_va = alloc_pa + kimage_voffset;
+        
+        kite_rw_mem = tlsf_create((void *)pool_va, MEMORY_RW_SIZE);
+        if (kite_rw_mem) {
+            kite_printk("KITE: RW pool ok size=0x%x\n", MEMORY_RW_SIZE);
+        } else {
+            kite_printk("KITE: RW pool fail\n");
+        }
+        
+        kite_rox_mem = tlsf_create((void *)(pool_va + MEMORY_RW_SIZE), MEMORY_ROX_SIZE);
+        if (kite_rox_mem) {
+            kite_printk("KITE: ROX pool ok size=0x%x\n", MEMORY_ROX_SIZE);
+        } else {
+            kite_printk("KITE: ROX pool fail\n");
+        }
+    } else {
+        kite_printk("KITE: alloc_size too small 0x%llx < 0x%x\n",
+                    alloc_size, MEMORY_RW_SIZE + MEMORY_ROX_SIZE);
+    }
     
     // init symbol engine
     if (kite_symbol_init) {
         int ret = kite_symbol_init((void *)kernel_va, start_preset.kernel_size);
         if (ret == 0) {
             uint64_t printk_lookup = symbol_lookup_name("printk");
-            kite_printk("KITE: symbol lookup test: printk=0x%llx (expected=0x%llx)\n",
+            kite_printk("KITE: symbol test printk=0x%llx expect=0x%llx\n",
                         printk_lookup, printk_addr);
         } else {
-            kite_printk("KITE: symbol engine init failed\n");
+            kite_printk("KITE: symbol init fail\n");
         }
     }
     
