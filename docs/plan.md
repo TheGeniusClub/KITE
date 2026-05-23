@@ -20,7 +20,7 @@
 - [x] **S3: Symbol Engine** — Hash cache, B-follow, stripped fallback scanner, entropy verify
 - [x] **S4: Hook Engine Core** — hook_engine.c + fphook.c + hotpatch.c, full KP logic with KITE TLSF pool
 - [x] **S5: Memory Mgmt** — execmem_alloc, alias_page, direct_pte with PTE walk
-- [ ] **S6: Module System** — ELF loader, init/exit lifecycle (header-only now)
+- [x] **S6: Module System** — ELF loader, init/ctl0/ctl1/exit lifecycle, KIMC, task_local
 - [ ] **S7: Full QEMU Boot** — ARM64 initrd, verify to shell
 
 ### P1-P6 Feature Status (Reality Check)

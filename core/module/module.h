@@ -21,8 +21,12 @@ typedef struct kite_module {
 } kite_module_t;
 
 int module_load(const char *path);
+int module_load_mem(void *mem, size_t size, const char *args, const char *event, void *reserved);
 int module_unload(const char *name);
 kite_module_t *module_find(const char *name);
 void module_list(void);
+int module_control0(const char *name, const char *ctl_args, char *out_msg, int outlen);
+int module_control1(const char *name, void *a1, void *a2, void *a3);
+int module_get_count(void);
 
 #endif // _KITE_MODULE_H

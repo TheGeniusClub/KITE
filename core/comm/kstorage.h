@@ -9,7 +9,7 @@
 
 // kernel storage - key-value store
 int kstorage_init(void);
-int kstorage_set(const char *key, void *value, size_t size);
+int kstorage_set(const char *key, const void *value, size_t size);
 void *kstorage_get(const char *key, size_t *size);
 int kstorage_del(const char *key);
 void kstorage_clear(void);

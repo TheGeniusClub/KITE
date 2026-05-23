@@ -10,7 +10,8 @@ CFLAGS := -Wall -O2 -I$(KITE_DIR)/include -I$(CORE_DIR) -Iinclude
 
 TESTS := l1_unit/test_stubs \
          l1_unit/test_tlsf \
-         l1_unit/test_memory
+         l1_unit/test_memory \
+         l1_unit/test_module
 
 TEST_BINS := $(addprefix build/,$(TESTS))
 
@@ -25,6 +26,9 @@ build/l1_unit/test_tlsf: l1_unit/test_tlsf.c $(CORE_DIR)/memory/tlsf.c | build/l
 	$(CC) $(CFLAGS) $^ -o $@
 
 build/l1_unit/test_memory: l1_unit/test_memory.c $(CORE_DIR)/memory/memory.c $(CORE_DIR)/memory/tlsf.c | build/l1_unit
+	$(CC) $(CFLAGS) -D__TEST_HOST__ $^ -o $@
+
+build/l1_unit/test_module: l1_unit/test_module.c $(CORE_DIR)/module/module.c $(CORE_DIR)/module/loader.c $(CORE_DIR)/comm/kstorage.c $(CORE_DIR)/comm/task_local.c $(CORE_DIR)/memory/tlsf.c $(CORE_DIR)/stubs.c | build/l1_unit
 	$(CC) $(CFLAGS) -D__TEST_HOST__ $^ -o $@
 
 build/l1_unit:
