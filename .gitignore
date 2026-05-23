@@ -1,0 +1,15 @@
+build/
+*.o
+*.elf
+*.bin
+patcher/*.log
+patcher/patched_kernel*
+patcher/boot_kite_fixed_v2.img
+patcher/kernel_test_b
+patcher/kite_patcher_test
+patcher/test_verify
+patcher/patcher
+patcher/qemu_patched_kernel
+patcher/kernel
+patcher/EOF
+patcher/*.txt
