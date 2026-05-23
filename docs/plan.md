@@ -19,7 +19,7 @@
 - [x] **S2: TLSF Pool Init** — Allocate 2MB RW + 4MB ROX via memblock_alloc, call tlsf_create
 - [x] **S3: Symbol Engine** — Hash cache, B-follow, stripped fallback scanner, entropy verify
 - [x] **S4: Hook Engine Core** — hook_engine.c + fphook.c + hotpatch.c, full KP logic with KITE TLSF pool
-- [ ] **S5: Memory Mgmt** — execmem_alloc, alias_page, direct_pte (header-only now)
+- [x] **S5: Memory Mgmt** — execmem_alloc, alias_page, direct_pte with PTE walk
 - [ ] **S6: Module System** — ELF loader, init/exit lifecycle (header-only now)
 - [ ] **S7: Full QEMU Boot** — ARM64 initrd, verify to shell
 

@@ -10,7 +10,7 @@
 
 #define TLSF_MAX_LOG2_SLI 5
 #define TLSF_MAX_SIZE (1 << 30)
-#define TLSF_BLOCK_HDR_SIZE 8
+#define TLSF_BLOCK_HDR_SIZE (sizeof(block_t))
 #define TLSF_FLI_OFFSET 7
 #define TLSF_SLI 4
 
@@ -50,7 +50,7 @@ static inline size_t tlsf_fli(size_t size)
 
 static inline size_t tlsf_sli(size_t size, size_t fli)
 {
-    if (fli == 0) return size >> 3;
+    if (fli == 0) return (size >> 3) & ((1 << TLSF_SLI) - 1);
     return (size >> (fli + TLSF_FLI_OFFSET - TLSF_SLI)) & ((1 << TLSF_SLI) - 1);
 }
 
@@ -102,7 +102,9 @@ static inline void split_block(tlsf_t tlsf, block_t *block, size_t size)
     block_set_free(next, 1);
     next->prev_size = size;
     block_t *next2 = next_block(next);
-    next2->prev_size = remain;
+    if (block_size(next2) > 0) {
+        next2->prev_size = remain;
+    }
     insert_block(tlsf, next);
 }
 
@@ -123,7 +125,7 @@ tlsf_t tlsf_create(void *mem, size_t bytes)
     }
     
     block_t *block = (block_t *)((char *)mem + sizeof(struct tlsf));
-    block_set_size(block, bytes - sizeof(struct tlsf) - TLSF_BLOCK_HDR_SIZE);
+    block_set_size(block, bytes - sizeof(struct tlsf) - 2 * TLSF_BLOCK_HDR_SIZE);
     block_set_free(block, 1);
     block->prev_size = 0;
     
@@ -212,12 +214,16 @@ void tlsf_free(tlsf_t tlsf, void *ptr)
     // merge with prev
     if (block->prev_size & ~0x1) {
         block_t *prev = prev_block(block);
-        if (block_is_free(prev)) {
-            remove_block(tlsf, prev);
-            block_set_size(prev, block_size(prev) + block_size(block) + TLSF_BLOCK_HDR_SIZE);
-            block_t *next2 = next_block(prev);
-            next2->prev_size = block_size(prev);
-            block = prev;
+        if ((char *)prev >= (char *)tlsf + sizeof(struct tlsf)) {
+            if (block_is_free(prev)) {
+                remove_block(tlsf, prev);
+                block_set_size(prev, block_size(prev) + block_size(block) + TLSF_BLOCK_HDR_SIZE);
+                block_t *next2 = next_block(prev);
+                if (block_size(next2) > 0) {
+                    next2->prev_size = block_size(prev);
+                }
+                block = prev;
+            }
         }
     }
     

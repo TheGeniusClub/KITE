@@ -13,3 +13,5 @@ patcher/qemu_patched_kernel
 patcher/kernel
 patcher/EOF
 patcher/*.txt
+test/debug*
+test/test_*_debug

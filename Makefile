@@ -90,6 +90,9 @@ $(OBJ_DIR)/fphook.o: $(CORE_DIR)/hook/fphook.c | $(OBJ_DIR)
 $(OBJ_DIR)/hotpatch.o: $(CORE_DIR)/hook/hotpatch.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+$(OBJ_DIR)/memory.o: $(CORE_DIR)/memory/memory.c | $(OBJ_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
 $(OBJ_DIR)/%.o: $(ARCH_DIR)/%.S | $(OBJ_DIR)
 	$(CC) $(ASFLAGS) -x assembler-with-cpp -c $< -o $@
 
